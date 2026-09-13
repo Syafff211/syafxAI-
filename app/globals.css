@@ -1,0 +1,153 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design tokens ───────────────────────────────────────────── */
+:root {
+  /* Light: warm off-white canvas, charcoal ink, calm indigo accent */
+  --canvas: 250 249 246;   /* #FAF9F6 warm white */
+  --surface: 255 255 255;
+  --elevated: 244 242 238;
+  --border: 229 226 219;
+  --ink: 32 33 36;         /* charcoal */
+  --muted: 92 94 99;
+  --faint: 138 140 146;
+  --accent: 90 96 220;     /* calm indigo */
+  --accent-soft: 234 235 251;
+}
+
+.dark {
+  /* Dark: near-black charcoal, soft white ink */
+  --canvas: 20 20 22;
+  --surface: 26 26 29;
+  --elevated: 34 34 38;
+  --border: 48 48 53;
+  --ink: 232 232 234;
+  --muted: 160 162 168;
+  --faint: 116 118 124;
+  --accent: 129 135 245;
+  --accent-soft: 40 42 66;
+}
+
+* {
+  border-color: rgb(var(--border));
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: rgb(var(--canvas));
+  color: rgb(var(--ink));
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Comfortable, quiet scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgb(var(--border));
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(var(--faint));
+}
+
+/* ── Prose (message rendering) ───────────────────────────────── */
+.prose-syafx {
+  color: rgb(var(--ink));
+  line-height: 1.72;
+  font-size: 15.5px;
+}
+.prose-syafx > * + * {
+  margin-top: 1rem;
+}
+.prose-syafx h1,
+.prose-syafx h2,
+.prose-syafx h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+.prose-syafx h1 { font-size: 1.4rem; margin-top: 1.6rem; }
+.prose-syafx h2 { font-size: 1.2rem; margin-top: 1.5rem; }
+.prose-syafx h3 { font-size: 1.05rem; margin-top: 1.3rem; }
+.prose-syafx p { margin: 0; }
+.prose-syafx ul,
+.prose-syafx ol {
+  padding-left: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.prose-syafx ul { list-style: disc; }
+.prose-syafx ol { list-style: decimal; }
+.prose-syafx li::marker { color: rgb(var(--faint)); }
+.prose-syafx a {
+  color: rgb(var(--accent));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose-syafx blockquote {
+  border-left: 2px solid rgb(var(--border));
+  padding-left: 1rem;
+  color: rgb(var(--muted));
+}
+.prose-syafx table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  display: block;
+  overflow-x: auto;
+}
+.prose-syafx th,
+.prose-syafx td {
+  border: 1px solid rgb(var(--border));
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.prose-syafx th {
+  background-color: rgb(var(--elevated));
+  font-weight: 600;
+}
+/* inline code */
+.prose-syafx :not(pre) > code {
+  background-color: rgb(var(--elevated));
+  border: 1px solid rgb(var(--border));
+  border-radius: 5px;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.86em;
+  font-family: var(--font-mono, ui-monospace, monospace);
+}
+.prose-syafx pre {
+  margin: 0;
+}
+.prose-syafx pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+/* highlight.js theme — tuned to our palette (works light & dark) */
+.hljs { color: rgb(var(--ink)); background: transparent; }
+.hljs-comment, .hljs-quote { color: rgb(var(--faint)); font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-literal, .hljs-type { color: #c678dd; }
+.hljs-string, .hljs-attr, .hljs-template-tag { color: #98c379; }
+.hljs-number, .hljs-symbol, .hljs-bullet { color: #d19a66; }
+.hljs-title, .hljs-section, .hljs-name, .hljs-function { color: #61afef; }
+.hljs-attribute, .hljs-variable, .hljs-tag { color: #e06c75; }
+.hljs-built_in, .hljs-class .hljs-title { color: #56b6c2; }
+
+.thin-scroll::-webkit-scrollbar { width: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}

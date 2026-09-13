@@ -1,0 +1,63 @@
+<!--
+  SyafxAI — Email verification template
+  Paste into: Supabase Dashboard → Authentication → Email Templates → "Confirm signup"
+  Subject:  Verifikasi email kamu — SyafxAI
+  The {{ .Token }} variable renders the 6-digit OTP code.
+-->
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verifikasi email kamu — SyafxAI</title>
+  </head>
+  <body style="margin:0;padding:0;background-color:#faf9f6;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#202124;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#faf9f6;padding:32px 16px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:440px;background:#ffffff;border:1px solid #e5e2db;border-radius:16px;overflow:hidden;">
+            <tr>
+              <td style="padding:28px 32px 8px 32px;">
+                <table role="presentation" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="width:28px;height:28px;background:#5a60dc;border-radius:8px;text-align:center;vertical-align:middle;color:#fff;font-weight:700;font-size:15px;">S</td>
+                    <td style="padding-left:8px;font-size:16px;font-weight:600;letter-spacing:-0.01em;">Syafx<span style="color:#5a60dc;">AI</span></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:12px 32px 0 32px;">
+                <h1 style="margin:0;font-size:20px;font-weight:600;letter-spacing:-0.01em;">Verifikasi Email</h1>
+                <p style="margin:12px 0 0 0;font-size:14px;line-height:1.6;color:#5c5e63;">
+                  Gunakan kode berikut untuk memverifikasi akun SyafxAI kamu:
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:20px 32px;">
+                <div style="background:#f4f2ee;border:1px solid #e5e2db;border-radius:12px;text-align:center;padding:18px 0;font-size:32px;font-weight:700;letter-spacing:10px;color:#202124;">
+                  {{ .Token }}
+                </div>
+                <p style="margin:14px 0 0 0;font-size:13px;line-height:1.6;color:#8a8c92;">
+                  Kode berlaku dalam waktu terbatas.
+                </p>
+                <p style="margin:8px 0 0 0;font-size:13px;line-height:1.6;color:#8a8c92;">
+                  Jika kamu tidak membuat akun SyafxAI, abaikan email ini.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:0 32px 28px 32px;">
+                <hr style="border:none;border-top:1px solid #e5e2db;margin:8px 0 16px 0;" />
+                <p style="margin:0;font-size:12px;color:#8a8c92;">
+                  <strong style="color:#202124;">SyafxAI</strong> — Think. Create. Learn.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
