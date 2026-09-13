@@ -1,23 +1,23 @@
-import {
-  GoogleGenerativeAI,
-  type Content,
-  type Part,
-} from "@google/generative-ai";
+import { GoogleGenAI, type Content, type Part } from "@google/genai";
 import type { AIProvider, GenerateOptions, ProviderStreamChunk } from "./types";
 import type { ChatMessage } from "@/types";
 
 /**
  * GeminiProvider — the concrete AIProvider backed by Google Gemini.
  *
- * All access to the Gemini SDK is contained here. The API key is read from the
- * server-only GEMINI_API_KEY env var and never leaves the server.
+ * Uses the official `@google/genai` SDK, which sends the API key via the
+ * `x-goog-api-key` header. This is required for the new Auth-key format
+ * (keys that start with "AQ.") as well as legacy "AIza" keys.
+ *
+ * The API key is read from the server-only GEMINI_API_KEY env var and never
+ * leaves the server.
  */
 export class GeminiProvider implements AIProvider {
   readonly id = "gemini";
-  private client: GoogleGenerativeAI | null;
+  private client: GoogleGenAI | null;
 
   constructor(apiKey = process.env.GEMINI_API_KEY) {
-    this.client = apiKey ? new GoogleGenerativeAI(apiKey) : null;
+    this.client = apiKey ? new GoogleGenAI({ apiKey }) : null;
   }
 
   isConfigured(): boolean {
@@ -57,23 +57,20 @@ export class GeminiProvider implements AIProvider {
 
   async *streamChat(opts: GenerateOptions): AsyncIterable<ProviderStreamChunk> {
     if (!this.client) throw new Error("Gemini API key not configured");
-    const model = this.client.getGenerativeModel({
-      model: opts.model,
-      systemInstruction: opts.system,
-    });
-
     const contents = this.toContents(opts.messages);
 
     try {
-      const result = await model.generateContentStream({
+      const stream = await this.client.models.generateContentStream({
+        model: opts.model,
         contents,
-        generationConfig: {
+        config: {
+          systemInstruction: opts.system,
           temperature: opts.temperature ?? 0.7,
         },
       });
-      for await (const chunk of result.stream) {
+      for await (const chunk of stream) {
         if (opts.signal?.aborted) break;
-        const text = chunk.text();
+        const text = chunk.text;
         if (text) yield { delta: text };
       }
     } catch (streamErr) {
@@ -87,15 +84,15 @@ export class GeminiProvider implements AIProvider {
 
   async generateChat(opts: GenerateOptions): Promise<string> {
     if (!this.client) throw new Error("Gemini API key not configured");
-    const model = this.client.getGenerativeModel({
+    const result = await this.client.models.generateContent({
       model: opts.model,
-      systemInstruction: opts.system,
-    });
-    const result = await model.generateContent({
       contents: this.toContents(opts.messages),
-      generationConfig: { temperature: opts.temperature ?? 0.7 },
+      config: {
+        systemInstruction: opts.system,
+        temperature: opts.temperature ?? 0.7,
+      },
     });
-    return result.response.text();
+    return result.text ?? "";
   }
 
   async generateImage(
@@ -105,11 +102,13 @@ export class GeminiProvider implements AIProvider {
     if (!this.client) throw new Error("Gemini API key not configured");
     if (!model) throw new Error("Image generation model not configured");
 
-    const genModel = this.client.getGenerativeModel({ model });
-    const result = await genModel.generateContent(prompt);
-    const parts = result.response.candidates?.[0]?.content?.parts ?? [];
+    const result = await this.client.models.generateContent({
+      model,
+      contents: prompt,
+    });
+    const parts = result.candidates?.[0]?.content?.parts ?? [];
     for (const part of parts) {
-      const inline = (part as { inlineData?: { data: string; mimeType: string } })
+      const inline = (part as { inlineData?: { data?: string; mimeType?: string } })
         .inlineData;
       if (inline?.data) {
         return { base64: inline.data, mimeType: inline.mimeType || "image/png" };
